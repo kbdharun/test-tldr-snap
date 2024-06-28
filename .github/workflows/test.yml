@@ -11,6 +11,7 @@ jobs:
      - uses: snapcore/action-build@v1
        id: snapcraft-build
        with:
+         path: snap/snapcraft.yaml
          snapcraft-args: "-v"
      - uses: actions/upload-artifact@v4
        with:
