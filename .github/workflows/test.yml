@@ -1,0 +1,69 @@
+name: Test
+
+on: ['push', 'pull_request']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', 'pypy3.9', 'pypy3.10']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install developer dependencies
+      run: |
+        python3 -m pip install -U pip setuptools
+        python3 -m pip install -U pytest pytest-runner flake8
+
+    - name: Install sphinx dependencies
+      run: >-
+        python -m
+        pip install
+        sphinx
+        sphinx-argparse
+        --user
+
+    - name: Install tldr dependencies
+      run: >-
+        python -m
+        pip install
+        -r
+        requirements.txt
+        --user
+
+    - name: Generate the manpage
+      working-directory: docs
+      run: make man
+
+    - name: Lint codebase
+      run: python3 -m flake8
+
+    - name: Run test suite
+      run: python3 setup.py pytest
+
+    - name: Test tldr cli
+      run: |
+        python3 -m pip install .
+        tldr --version
+
+  build-snap:
+    runs-on: ubuntu-latest
+
+    steps:
+     - uses: actions/checkout@v4
+     - uses: snapcore/action-build@v1
+       id: snapcraft-build
+       with:
+         snapcraft-args: "-v"
+     - uses: actions/upload-artifact@v4
+       with:
+         name: ${{ steps.snapcraft-build.outputs.snap }}
+         path: ${{ steps.snapcraft-build.outputs.snap }}
