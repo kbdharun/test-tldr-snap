@@ -7,6 +7,13 @@ description: Python command-line client for tldr pages.
 grade: stable
 confinement: strict
 
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+  - build-on: armhf
+  - build-on: ppc64el
+  - build-on: s390x
+
 parts:
   tldr:
     plugin: python
