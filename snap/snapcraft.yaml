@@ -31,8 +31,6 @@ parts:
     build-environment:
       - PATH: ${CRAFT_PART_INSTALL}/bin:${PATH}
       - PYTHONPATH: ${CRAFT_PART_INSTALL}/lib/python3.12/site-packages
-    override-pull: |
-      craftctl default
     override-build: |
       craftctl default
       cd $CRAFT_PART_SRC/docs
@@ -73,8 +71,3 @@ apps:
     plugs:
       - network
       - home
- 
-build-system:
-  requires = ["hatchling"]
-  build-backend = "hatchling.build"
- 
